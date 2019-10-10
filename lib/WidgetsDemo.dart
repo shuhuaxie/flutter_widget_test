@@ -790,8 +790,7 @@ class MyRenderPhysicalShapeDemo extends StatefulWidget {
 }
 
 class MyRenderPhysicalShapeState extends State<MyRenderPhysicalShapeDemo> {
-  double _insets = 0.0;
-  double _opacity = 0.0;
+  double _elevation = 0.0;
 
   @override
   Widget build(BuildContext context) {
@@ -801,24 +800,11 @@ class MyRenderPhysicalShapeState extends State<MyRenderPhysicalShapeDemo> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Slider(
-                value: _insets,
-                onChanged: (value) => setState(() => _insets = value),
-              ),
-              Slider(
-                value: _opacity,
-                onChanged: (value) => setState(() => _opacity = value),
-              ),
-              Opacity(
-                // 只有一个不透明度的参数，动态设置即可实现动画
-                opacity: _opacity,
-                child: Container(
-                  width: 100.0,
-                  height: 100.0,
-                  color: Colors.red,
-                ),
+                value: _elevation,
+                onChanged: (value) => setState(() => _elevation = value),
               ),
               MyPhysicalShape(
-                insets: _insets,
+                elevation: _elevation,
                 child: Container(
                   width: 50,
                   height: 50,
@@ -829,28 +815,28 @@ class MyRenderPhysicalShapeState extends State<MyRenderPhysicalShapeDemo> {
 }
 
 class MyPhysicalShape extends SingleChildRenderObjectWidget {
-  final _insets;
+  final _elevation;
 
-  MyPhysicalShape({double insets, Widget child})
-      : this._insets = insets,
+  MyPhysicalShape({double elevation, Widget child})
+      : this._elevation = elevation,
         super(child: child);
-
   @override
   RenderPhysicalShape createRenderObject(BuildContext context) {
-    print('xie _insets:' + _insets.toString());
     return RenderPhysicalShape(
       clipBehavior: Clip.none,
-      // 0x61000000
       color: Color(0x61000000),
       clipper: ShapeBorderClipper(
         shape: CircleBorder(),
         textDirection: Directionality.of(context),
       ),
-//        shape: BoxShape.circle,
-      // 0xff000000
       shadowColor: Colors.black,
-      // 2 ~ 0
-      elevation: _insets * 2,
+      elevation: _elevation,
     );
+  }
+
+  @override
+  void updateRenderObject(BuildContext context, RenderPhysicalShape renderObject) {
+    renderObject
+      ..elevation = _elevation;
   }
 }
