@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
 
+import 'package:flutter/rendering.dart';
+
 class ListItem extends StatelessWidget {
   final String name;
   final Widget widget;
@@ -20,9 +22,12 @@ class ListItem extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Text(
-          name,
-          style: Theme.of(context).textTheme.body2,
+        child: Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: Text(
+            name,
+            style: Theme.of(context).textTheme.body2,
+          ),
         ),
       ),
     );
@@ -106,7 +111,6 @@ class BackdropFilterDemo extends StatelessWidget {
   }
 }
 
-
 class ClipRectDemo extends StatefulWidget {
   @override
   _ClipRectDemoState createState() {
@@ -180,7 +184,6 @@ class _ClipRRectDemoState extends State<ClipRRectDemo> {
   }
 }
 
-
 class ClipOvalDemo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -246,6 +249,26 @@ class PhysicalModelDemo extends StatelessWidget {
         shadowColor: Colors.blueAccent,
         elevation: 20.0,
         child: Container(),
+      ),
+    );
+  }
+}
+
+class PhysicalShapeDemo extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('PhysicalModelDemo')),
+      body: PhysicalShape(
+        color: Colors.red,
+        clipper: ShapeBorderClipper(
+          shape: CircleBorder(),
+          textDirection: Directionality.of(context),
+        ),
+//        shape: BoxShape.circle,
+        shadowColor: Colors.black,
+        elevation: 10,
+        child: Container(), //带上这个 填充界面，否则神马都没有。
       ),
     );
   }
@@ -755,6 +778,79 @@ class _AbsorbPointerDemo extends State<AbsorbPointerDemo> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class MyRenderPhysicalShapeDemo extends StatefulWidget {
+  @override
+  MyRenderPhysicalShapeState createState() {
+    return MyRenderPhysicalShapeState();
+  }
+}
+
+class MyRenderPhysicalShapeState extends State<MyRenderPhysicalShapeDemo> {
+  double _insets = 0.0;
+  double _opacity = 0.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(title: Text('MyRenderPhysicalShapeDemo')),
+        body: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Slider(
+                value: _insets,
+                onChanged: (value) => setState(() => _insets = value),
+              ),
+              Slider(
+                value: _opacity,
+                onChanged: (value) => setState(() => _opacity = value),
+              ),
+              Opacity(
+                // 只有一个不透明度的参数，动态设置即可实现动画
+                opacity: _opacity,
+                child: Container(
+                  width: 100.0,
+                  height: 100.0,
+                  color: Colors.red,
+                ),
+              ),
+              MyPhysicalShape(
+                insets: _insets,
+                child: Container(
+                  width: 50,
+                  height: 50,
+                ),
+              )
+            ]));
+  }
+}
+
+class MyPhysicalShape extends SingleChildRenderObjectWidget {
+  final _insets;
+
+  MyPhysicalShape({double insets, Widget child})
+      : this._insets = insets,
+        super(child: child);
+
+  @override
+  RenderPhysicalShape createRenderObject(BuildContext context) {
+    print('xie _insets:' + _insets.toString());
+    return RenderPhysicalShape(
+      clipBehavior: Clip.none,
+      // 0x61000000
+      color: Color(0x61000000),
+      clipper: ShapeBorderClipper(
+        shape: CircleBorder(),
+        textDirection: Directionality.of(context),
+      ),
+//        shape: BoxShape.circle,
+      // 0xff000000
+      shadowColor: Colors.black,
+      // 2 ~ 0
+      elevation: _insets * 2,
     );
   }
 }
