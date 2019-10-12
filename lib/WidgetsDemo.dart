@@ -840,3 +840,94 @@ class MyPhysicalShape extends SingleChildRenderObjectWidget {
       ..elevation = _elevation;
   }
 }
+
+
+class MyRenderBoxDemo extends StatefulWidget {
+  @override
+  MyRenderBoxState createState() {
+    return MyRenderBoxState();
+  }
+}
+
+class MyRenderBoxState extends State<MyRenderBoxDemo> {
+  double _elevation = 0.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(title: Text('MyRenderPhysicalShapeDemo')),
+        body: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Slider(
+                value: _elevation,
+                onChanged: (value) => setState(() => _elevation = value),
+              ),
+              MyRenderBoxWidget(
+                elevation: _elevation,
+              )
+            ]));
+  }
+}
+
+class MyRenderBoxWidget extends LeafRenderObjectWidget {
+  final _elevation;
+
+  MyRenderBoxWidget({double elevation})
+      : this._elevation = elevation,
+        super();
+
+  @override
+  MyRenderBox createRenderObject(BuildContext context) {
+    return MyRenderBox(
+      elevation: _elevation,
+    );
+  }
+  @override
+  void updateRenderObject(BuildContext context, MyRenderBox renderObject) {
+    renderObject
+      ..elevation = _elevation;
+  }
+}
+
+class MyRenderBox extends RenderBox {
+  MyRenderBox({
+    double elevation = 0.0,
+  }) : _elevation = elevation,
+        super();
+
+  @override
+  PhysicalModelLayer get layer => super.layer;
+
+  @override
+  Path get _defaultClip => Path()..addRect(Offset.zero & size);
+
+  @override
+  void performLayout() {
+    size = Size(100, 100);
+  }
+
+  @override
+  void paint(PaintingContext context, Offset offset) {
+      final Rect offsetBounds = offset & size;
+      final Path offsetPath = _defaultClip.shift(offset);
+      layer ??= PhysicalModelLayer();
+      layer
+        ..clipPath = offsetPath
+        ..clipBehavior = Clip.none
+        ..elevation = elevation
+        ..color = Color(0x61000000)
+        ..shadowColor = Colors.black;
+      context.pushLayer(layer, super.paint, offset, childPaintBounds: offsetBounds);
+  }
+
+  double get elevation => _elevation;
+  double _elevation;
+  set elevation(double value) {
+    if (elevation == value)
+      return;
+    _elevation = value;
+    markNeedsPaint();
+  }
+
+}
