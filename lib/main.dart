@@ -59,6 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ListItem('AbsorbPointer', AbsorbPointerDemo()),
               ListItem('MyRenderPhysicalShape & SingleChildRenderObjectWidget', MyRenderPhysicalShapeDemo()),
               ListItem('MyRenderBox & LeafRenderObjectWidget', MyRenderBoxDemo()),
+              ListItem('MyRenderBox2 & LeafRenderObjectWidget & Layer', MyRenderBoxDemo2()),
             ],
           ),
         ),

@@ -931,3 +931,181 @@ class MyRenderBox extends RenderBox {
   }
 
 }
+
+class MyRenderBoxDemo2 extends StatefulWidget {
+  @override
+  MyRenderBoxState2 createState() {
+    return MyRenderBoxState2();
+  }
+}
+
+class MyRenderBoxState2 extends State<MyRenderBoxDemo2> {
+  double _elevation = 0.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(title: Text('MyRenderPhysicalShapeDemo')),
+        body: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Slider(
+                value: _elevation,
+                onChanged: (value) => setState(() => _elevation = value),
+              ),
+              MyRenderBoxWidget2(
+                elevation: _elevation,
+              )
+            ]));
+  }
+}
+
+class MyRenderBoxWidget2 extends LeafRenderObjectWidget {
+  final _elevation;
+
+  MyRenderBoxWidget2({double elevation})
+      : this._elevation = elevation,
+        super();
+
+  @override
+  MyRenderBox2 createRenderObject(BuildContext context) {
+    return MyRenderBox2(
+      elevation: _elevation,
+    );
+  }
+  @override
+  void updateRenderObject(BuildContext context, MyRenderBox2 renderObject) {
+    renderObject
+      ..elevation = _elevation;
+  }
+}
+
+class MyRenderBox2 extends RenderBox {
+  MyRenderBox2({
+    double elevation = 0.0,
+  }) : _elevation = elevation,
+        super();
+
+  @override
+  Path get _defaultClip => Path()..addRect(Offset.zero & size);
+
+  @override
+  void performLayout() {
+    size = Size(100, 100);
+  }
+
+  @override
+  MyLayer get layer => super.layer;
+
+  @override
+  void paint(PaintingContext context, Offset offset) {
+    final Rect offsetBounds = offset & size;
+    final Path offsetPath = _defaultClip.shift(offset);
+    layer ??= MyLayer();
+    layer
+      ..clipPath = offsetPath
+      ..clipBehavior = Clip.none
+      ..elevation = elevation
+      ..color = Color(0x61000000)
+      ..shadowColor = Colors.black;
+    context.pushLayer(layer, super.paint, offset, childPaintBounds: offsetBounds);
+  }
+
+  double get elevation => _elevation;
+  double _elevation;
+  set elevation(double value) {
+    if (elevation == value)
+      return;
+    _elevation = value;
+    markNeedsPaint();
+  }
+
+}
+
+class MyLayer extends ContainerLayer{
+
+  Path get clipPath => _clipPath;
+  Path _clipPath;
+  set clipPath(Path value) {
+    if (value != _clipPath) {
+      _clipPath = value;
+      markNeedsAddToScene();
+    }
+  }
+  /// {@macro flutter.widgets.Clip}
+  Clip get clipBehavior => _clipBehavior;
+  Clip _clipBehavior;
+  set clipBehavior(Clip value) {
+    assert(value != null);
+    if (value != _clipBehavior) {
+      _clipBehavior = value;
+      markNeedsAddToScene();
+    }
+  }
+  double get elevation => _elevation;
+  double _elevation;
+  set elevation(double value) {
+    if (value != _elevation) {
+      _elevation = value;
+      markNeedsAddToScene();
+    }
+  }
+
+  Color get color => _color;
+  Color _color;
+  set color(Color value) {
+    if (value != _color) {
+      _color = value;
+      markNeedsAddToScene();
+    }
+  }
+
+  /// The shadow color.
+  Color get shadowColor => _shadowColor;
+  Color _shadowColor;
+  set shadowColor(Color value) {
+    if (value != _shadowColor) {
+      _shadowColor = value;
+      markNeedsAddToScene();
+    }
+  }
+  @protected
+  ui.EngineLayer get engineLayer => _engineLayer;
+
+  @protected
+  set engineLayer(ui.EngineLayer value) {
+    super.engineLayer = value;
+    _engineLayer = value;
+    if (!alwaysNeedsAddToScene) {
+      if (parent != null && !parent.alwaysNeedsAddToScene) {
+        parent.markNeedsAddToScene();
+      }
+    }
+  }
+  ui.EngineLayer _engineLayer;
+  @override
+  void addToScene(ui.SceneBuilder builder, [Offset layerOffset = Offset.zero]) {
+    engineLayer = builder.pushPhysicalShape(
+      path: layerOffset == Offset.zero ? clipPath : clipPath.shift(layerOffset),
+      elevation: elevation,
+      color: color,
+      shadowColor: shadowColor,
+      clipBehavior: clipBehavior,
+      oldLayer: _engineLayer,
+    );
+  }
+
+  // 点击事件
+  @override
+  S find<S>(Offset regionOffset) {
+
+    return null;
+  }
+  // 点击事件
+  @override
+  Iterable<S> findAll<S>(Offset regionOffset) {
+
+    return null;
+  }
+
+}
