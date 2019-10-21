@@ -26,7 +26,7 @@ class ListItem extends StatelessWidget {
           alignment: AlignmentDirectional.centerStart,
           child: Text(
             name,
-            style: Theme.of(context).textTheme.body2,
+            style: Theme.of(context).textTheme.title,
           ),
         ),
       ),
@@ -39,6 +39,47 @@ class OpacityDemo extends StatefulWidget {
   _OpacityDemoState createState() {
     return _OpacityDemoState();
   }
+}
+
+class TextDemo extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('OpacityDemo')),
+      body: richTextWid04()
+    );
+  }
+}
+Widget richTextWid02() {
+  return Text("11");
+}
+Widget richTextWid04() {
+  return RichText(
+      text: TextSpan(
+          text: '多种样式，如：',
+          style: TextStyle(fontSize: 16.0, color: Colors.black),
+          children: <TextSpan>[
+            TextSpan(
+                text: '红色',
+                style: TextStyle(fontSize: 18.0, color: Colors.red)),
+            TextSpan(
+                text: '绿色',
+                style: TextStyle(fontSize: 18.0, color: Colors.green)),
+            TextSpan(
+                text: '蓝色',
+                style: TextStyle(fontSize: 18.0, color: Colors.blue)),
+            TextSpan(
+                text: '白色',
+                style: TextStyle(fontSize: 18.0, color: Colors.white)),
+            TextSpan(
+                text: '紫色',
+                style: TextStyle(fontSize: 18.0, color: Colors.purple)),
+            TextSpan(
+                text: '黑色',
+                style: TextStyle(fontSize: 18.0, color: Colors.black))
+          ]),
+      textAlign: TextAlign.center);
 }
 
 class _OpacityDemoState extends State<OpacityDemo> {
@@ -65,6 +106,55 @@ class _OpacityDemoState extends State<OpacityDemo> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+class TextFieldDemo extends StatefulWidget {
+  @override
+  _TextFieldState createState() {
+    return _TextFieldState();
+  }
+}
+
+class _TextFieldState extends State<TextFieldDemo> {
+  TextEditingController _controller;
+
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: TextField(
+          controller: _controller,
+          onSubmitted: (String value) async {
+            await showDialog<void>(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text('Thanks!'),
+                  content: Text('You typed "$value".'),
+                  actions: <Widget>[
+                    FlatButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text('OK'),
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }
@@ -820,6 +910,7 @@ class MyPhysicalShape extends SingleChildRenderObjectWidget {
   MyPhysicalShape({double elevation, Widget child})
       : this._elevation = elevation,
         super(child: child);
+
   @override
   RenderPhysicalShape createRenderObject(BuildContext context) {
     return RenderPhysicalShape(
@@ -835,12 +926,11 @@ class MyPhysicalShape extends SingleChildRenderObjectWidget {
   }
 
   @override
-  void updateRenderObject(BuildContext context, RenderPhysicalShape renderObject) {
-    renderObject
-      ..elevation = _elevation;
+  void updateRenderObject(
+      BuildContext context, RenderPhysicalShape renderObject) {
+    renderObject..elevation = _elevation;
   }
 }
-
 
 class MyRenderBoxDemo extends StatefulWidget {
   @override
@@ -883,17 +973,17 @@ class MyRenderBoxWidget extends LeafRenderObjectWidget {
       elevation: _elevation,
     );
   }
+
   @override
   void updateRenderObject(BuildContext context, MyRenderBox renderObject) {
-    renderObject
-      ..elevation = _elevation;
+    renderObject..elevation = _elevation;
   }
 }
 
 class MyRenderBox extends RenderBox {
   MyRenderBox({
     double elevation = 0.0,
-  }) : _elevation = elevation,
+  })  : _elevation = elevation,
         super();
 
   @override
@@ -909,27 +999,27 @@ class MyRenderBox extends RenderBox {
 
   @override
   void paint(PaintingContext context, Offset offset) {
-      final Rect offsetBounds = offset & size;
-      final Path offsetPath = _defaultClip.shift(offset);
-      layer ??= PhysicalModelLayer();
-      layer
-        ..clipPath = offsetPath
-        ..clipBehavior = Clip.none
-        ..elevation = elevation
-        ..color = Color(0x61000000)
-        ..shadowColor = Colors.black;
-      context.pushLayer(layer, super.paint, offset, childPaintBounds: offsetBounds);
+    final Rect offsetBounds = offset & size;
+    final Path offsetPath = _defaultClip.shift(offset);
+    layer ??= PhysicalModelLayer();
+    layer
+      ..clipPath = offsetPath
+      ..clipBehavior = Clip.none
+      ..elevation = elevation
+      ..color = Color(0x61000000)
+      ..shadowColor = Colors.black;
+    context.pushLayer(layer, super.paint, offset,
+        childPaintBounds: offsetBounds);
   }
 
   double get elevation => _elevation;
   double _elevation;
+
   set elevation(double value) {
-    if (elevation == value)
-      return;
+    if (elevation == value) return;
     _elevation = value;
     markNeedsPaint();
   }
-
 }
 
 class MyRenderBoxDemo2 extends StatefulWidget {
@@ -973,17 +1063,17 @@ class MyRenderBoxWidget2 extends LeafRenderObjectWidget {
       elevation: _elevation,
     );
   }
+
   @override
   void updateRenderObject(BuildContext context, MyRenderBox2 renderObject) {
-    renderObject
-      ..elevation = _elevation;
+    renderObject..elevation = _elevation;
   }
 }
 
 class MyRenderBox2 extends RenderBox {
   MyRenderBox2({
     double elevation = 0.0,
-  }) : _elevation = elevation,
+  })  : _elevation = elevation,
         super();
 
   @override
@@ -1008,33 +1098,35 @@ class MyRenderBox2 extends RenderBox {
       ..elevation = elevation
       ..color = Color(0x61000000)
       ..shadowColor = Colors.black;
-    context.pushLayer(layer, super.paint, offset, childPaintBounds: offsetBounds);
+    context.pushLayer(layer, super.paint, offset,
+        childPaintBounds: offsetBounds);
   }
 
   double get elevation => _elevation;
   double _elevation;
+
   set elevation(double value) {
-    if (elevation == value)
-      return;
+    if (elevation == value) return;
     _elevation = value;
     markNeedsPaint();
   }
-
 }
 
-class MyLayer extends ContainerLayer{
-
+class MyLayer extends ContainerLayer {
   Path get clipPath => _clipPath;
   Path _clipPath;
+
   set clipPath(Path value) {
     if (value != _clipPath) {
       _clipPath = value;
       markNeedsAddToScene();
     }
   }
+
   /// {@macro flutter.widgets.Clip}
   Clip get clipBehavior => _clipBehavior;
   Clip _clipBehavior;
+
   set clipBehavior(Clip value) {
     assert(value != null);
     if (value != _clipBehavior) {
@@ -1042,8 +1134,10 @@ class MyLayer extends ContainerLayer{
       markNeedsAddToScene();
     }
   }
+
   double get elevation => _elevation;
   double _elevation;
+
   set elevation(double value) {
     if (value != _elevation) {
       _elevation = value;
@@ -1053,6 +1147,7 @@ class MyLayer extends ContainerLayer{
 
   Color get color => _color;
   Color _color;
+
   set color(Color value) {
     if (value != _color) {
       _color = value;
@@ -1063,12 +1158,14 @@ class MyLayer extends ContainerLayer{
   /// The shadow color.
   Color get shadowColor => _shadowColor;
   Color _shadowColor;
+
   set shadowColor(Color value) {
     if (value != _shadowColor) {
       _shadowColor = value;
       markNeedsAddToScene();
     }
   }
+
   @protected
   ui.EngineLayer get engineLayer => _engineLayer;
 
@@ -1082,7 +1179,9 @@ class MyLayer extends ContainerLayer{
       }
     }
   }
+
   ui.EngineLayer _engineLayer;
+
   @override
   void addToScene(ui.SceneBuilder builder, [Offset layerOffset = Offset.zero]) {
     engineLayer = builder.pushPhysicalShape(
@@ -1098,14 +1197,12 @@ class MyLayer extends ContainerLayer{
   // 点击事件
   @override
   S find<S>(Offset regionOffset) {
-
     return null;
   }
+
   // 点击事件
   @override
   Iterable<S> findAll<S>(Offset regionOffset) {
-
     return null;
   }
-
 }
