@@ -32,7 +32,9 @@ class MockFlex extends MultiChildRenderObjectWidget {
 }
 
 class MockRenderFlex extends RenderBox
-    with MockContainerRenderObjectMixin<RenderBox, MockFlexParentData> {
+    with
+        MockContainerRenderObjectMixin<RenderBox, MockFlexParentData>,
+        RenderBoxContainerDefaultsMixin<RenderBox, MockFlexParentData> {
   MockRenderFlex({List<RenderBox> children}) : super();
 
   @override
@@ -70,6 +72,17 @@ class MockRenderFlex extends RenderBox
     size = constraints.constrain(Size(crossSize, idealSize));
 
     // Align items along the main axis.
+  }
+
+  @override
+  void paint(PaintingContext context, Offset offset) {
+    defaultPaint(context, offset);
+  }
+
+  @override
+  bool debugValidateChild(RenderObject child) {
+    // TODO: implement debugValidateChild
+    return true;
   }
 }
 
@@ -135,12 +148,140 @@ mixin MockContainerRenderObjectMixin<ChildType extends RenderObject,
     }
   }
 
+  void add(ChildType child) {
+    insert(child, after: _lastChild);
+  }
+
+  /// Add all the children to the end of this render object's child list.
+  void addAll(List<ChildType> children) {
+    children?.forEach(add);
+  }
+
+  void _removeFromChildList(ChildType child) {
+    final ParentDataType childParentData = child.parentData;
+//    assert(_debugUltimatePreviousSiblingOf(child, equals: _firstChild));
+//    assert(_debugUltimateNextSiblingOf(child, equals: _lastChild));
+    assert(_childCount >= 0);
+    if (childParentData.previousSibling == null) {
+      assert(_firstChild == child);
+      _firstChild = childParentData.nextSibling;
+    } else {
+      final ParentDataType childPreviousSiblingParentData =
+          childParentData.previousSibling.parentData;
+      childPreviousSiblingParentData.nextSibling = childParentData.nextSibling;
+    }
+    if (childParentData.nextSibling == null) {
+      assert(_lastChild == child);
+      _lastChild = childParentData.previousSibling;
+    } else {
+      final ParentDataType childNextSiblingParentData =
+          childParentData.nextSibling.parentData;
+      childNextSiblingParentData.previousSibling =
+          childParentData.previousSibling;
+    }
+    childParentData.previousSibling = null;
+    childParentData.nextSibling = null;
+    _childCount -= 1;
+  }
+
+  /// Remove this child from the child list.
+  ///
+  /// Requires the child to be present in the child list.
+  void remove(ChildType child) {
+    _removeFromChildList(child);
+    dropChild(child);
+  }
+
+  /// Remove all their children from this render object's child list.
+  ///
+  /// More efficient than removing them individually.
+  void removeAll() {
+    ChildType child = _firstChild;
+    while (child != null) {
+      final ParentDataType childParentData = child.parentData;
+      final ChildType next = childParentData.nextSibling;
+      childParentData.previousSibling = null;
+      childParentData.nextSibling = null;
+      dropChild(child);
+      child = next;
+    }
+    _firstChild = null;
+    _lastChild = null;
+    _childCount = 0;
+  }
+
+  /// Move the given `child` in the child list to be after another child.
+  ///
+  /// More efficient than removing and re-adding the child. Requires the child
+  /// to already be in the child list at some position. Pass null for `after` to
+  /// move the child to the start of the child list.
+  void move(ChildType child, {ChildType after}) {
+    assert(child != this);
+    assert(after != this);
+    assert(child != after);
+    assert(child.parent == this);
+    final ParentDataType childParentData = child.parentData;
+    if (childParentData.previousSibling == after) return;
+    _removeFromChildList(child);
+    _insertIntoChildList(child, after: after);
+    markNeedsLayout();
+  }
+
+  /// The previous child before the given child in the child list.
+  ChildType childBefore(ChildType child) {
+    assert(child != null);
+    assert(child.parent == this);
+    final ParentDataType childParentData = child.parentData;
+    return childParentData.previousSibling;
+  }
+
+  /// The next child after the given child in the child list.
+  ChildType childAfter(ChildType child) {
+    assert(child != null);
+    assert(child.parent == this);
+    final ParentDataType childParentData = child.parentData;
+    return childParentData.nextSibling;
+  }
+
+  @override
+  List<DiagnosticsNode> debugDescribeChildren() {
+    final List<DiagnosticsNode> children = <DiagnosticsNode>[];
+    if (firstChild != null) {
+      ChildType child = firstChild;
+      int count = 1;
+      while (true) {
+        children.add(child.toDiagnosticsNode(name: 'child $count'));
+        if (child == lastChild) break;
+        count += 1;
+        final ParentDataType childParentData = child.parentData;
+        child = childParentData.nextSibling;
+      }
+    }
+    return children;
+  }
+
+  int get childCount => _childCount;
+
+  ChildType get lastChild => _lastChild;
+
   ChildType get firstChild => _firstChild;
+
+  // RenderObjectElement.deactivate
+  // A RenderObject was still attached when attempting to deactivate its RenderObjectElement
+
+  @override
+  void detach() {
+    super.detach();
+    ChildType child = _firstChild;
+    while (child != null) {
+      child.detach();
+      final ParentDataType childParentData = child.parentData;
+      child = childParentData.nextSibling;
+    }
+  }
 }
 
-class MockFlexParentData extends ContainerBoxParentData<RenderBox> {
-
-}
+class MockFlexParentData extends ContainerBoxParentData<RenderBox> {}
 
 class MockMultiChildRenderObjectElement extends MultiChildRenderObjectElement {
   MockMultiChildRenderObjectElement(MultiChildRenderObjectWidget widget)
