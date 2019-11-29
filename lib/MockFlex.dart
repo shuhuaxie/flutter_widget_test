@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class MockFlexDemo extends StatelessWidget {
   @override
@@ -11,7 +12,17 @@ class MockFlexDemo extends StatelessWidget {
             Text("1"),
             Text("2"),
             Text("3"),
-            Text("4"),
+            GestureDetector(
+                onTap: () {
+                  print('xie onTap...');
+//                  Fluttertoast.showToast(
+//                      msg: "3",
+//                      toastLength: Toast.LENGTH_SHORT,
+//                      gravity: ToastGravity.CENTER,
+//                      timeInSecForIos: 1,
+//                  );
+                },
+                child: Text("4")),
           ],
         ));
   }
@@ -83,6 +94,39 @@ class MockRenderFlex extends RenderBox
   bool debugValidateChild(RenderObject child) {
     // TODO: implement debugValidateChild
     return true;
+  }
+
+  @override
+  bool hitTest(BoxHitTestResult result, {Offset position}) {
+    print('xie hitTest');
+    return super.hitTest(result, position: position);
+  }
+
+  @override
+  bool hitTestChildren(BoxHitTestResult result, {Offset position}) {
+    print('xie hit Test children');
+    RenderBox child = lastChild;
+    int index = 0;
+    while (child != null) {
+      print('xie child' + index.toString());
+      index++;
+      final MockFlexParentData childParentData = child.parentData;
+      final bool isHit = result.addWithPaintOffset(
+        offset: childParentData.offset,
+        position: position,
+        hitTest: (BoxHitTestResult result, Offset transformed) {
+          print("xie hello test");
+          assert(transformed == position - childParentData.offset);
+          return child.hitTest(result, position: transformed);
+        },
+      );
+      print('xie isHit:' + isHit.toString());
+      if (isHit) return true;
+      child = childParentData.previousSibling;
+      print('xie child type:' + child.runtimeType.toString());
+    }
+    return false;
+//    return defaultHitTestChildren(result, position: position);
   }
 }
 

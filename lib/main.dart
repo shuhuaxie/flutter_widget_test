@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'BasicWidget.dart';
 import 'MockFlex.dart';
+import 'navigator_test.dart';
+import 'usefulWidget.dart';
 import 'WidgetsDemo.dart';
 
 void main() => runApp(MyApp());
@@ -40,11 +42,13 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              ListItem('MockFlex', MockFlexDemo()),
+              Align(
+                alignment: Alignment.centerLeft,
+                  child: ListItem('MockFlex', MockFlexDemo())),
 //              ListItem('Opacity', OpacityDemo()),
 //              ListItem('Text', TextDemo()),
-//              ListItem('ColumnDemo', ColumnDemo()),
-//              ListItem('RowDemo', RowDemo()),
+              ListItem('ColumnDemo', ColumnDemo()),
+              ListItem('RowDemo', RowDemo()),
 //              ListItem('ListView', ListViewDemo()),
 //              ListItem('TextField', TextFieldDemo()),
 //              ListItem('ShaderMask', ShaderMaskDemo()),
@@ -66,7 +70,10 @@ class _MyHomePageState extends State<MyHomePage> {
 //              ListItem('IgnorePointer', IgnorePointerDemo()),
 //              ListItem('AbsorbPointer', AbsorbPointerDemo()),
 //              ListItem('MyRenderPhysicalShape & SingleChildRenderObjectWidget', MyRenderPhysicalShapeDemo()),
-//              ListItem('MyRenderBox & LeafRenderObjectWidget', MyRenderBoxDemo()),
+
+              ListItem('MyRenderBox & LeafRenderObjectWidget', MyRenderBoxDemo()),
+              ListItem('CustomPaint & TriangleWidget', TriangleDemo()),
+              ListItem('navigator', FirstRoute()),
 //              ListItem('MyRenderBox2 & LeafRenderObjectWidget & Layer', MyRenderBoxDemo2()),
             ],
           ),
