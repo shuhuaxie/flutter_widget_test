@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_widget_test/test_gesture.dart';
 import 'BasicWidget.dart';
 import 'MockFlex.dart';
 import 'navigator_test.dart';
@@ -10,6 +11,7 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -72,6 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
 //              ListItem('MyRenderPhysicalShape & SingleChildRenderObjectWidget', MyRenderPhysicalShapeDemo()),
 
               ListItem('MyRenderBox & LeafRenderObjectWidget', MyRenderBoxDemo()),
+              ListItem('MyTestGestureDemo', MyTestGestureDemo()),
               ListItem('CustomPaint & TriangleWidget', TriangleDemo()),
               ListItem('navigator', FirstRoute()),
 //              ListItem('MyRenderBox2 & LeafRenderObjectWidget & Layer', MyRenderBoxDemo2()),

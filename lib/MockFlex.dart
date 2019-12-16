@@ -128,6 +128,12 @@ class MockRenderFlex extends RenderBox
     return false;
 //    return defaultHitTestChildren(result, position: position);
   }
+
+  @override
+  void handleEvent(PointerEvent event, covariant HitTestEntry entry) {
+    print('xie event:' + event.runtimeType.toString());
+  }
+
 }
 
 mixin MockContainerRenderObjectMixin<ChildType extends RenderObject,
