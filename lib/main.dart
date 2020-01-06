@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_widget_test/test_gesture.dart';
 import 'BasicWidget.dart';
 import 'MockFlex.dart';
+import 'navigator_test.dart';
+import 'usefulWidget.dart';
 import 'WidgetsDemo.dart';
 import 'hite_test_demo.dart';
 import 'lifeCycle.dart';
@@ -10,6 +13,7 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -46,8 +50,8 @@ class _MyHomePageState extends State<MyHomePage> {
               ListItem('Lifecycle', MyWidgetLifeCycleDemo()),
 //              ListItem('Opacity', OpacityDemo()),
 //              ListItem('Text', TextDemo()),
-//              ListItem('ColumnDemo', ColumnDemo()),
-//              ListItem('RowDemo', RowDemo()),
+              ListItem('ColumnDemo', ColumnDemo()),
+              ListItem('RowDemo', RowDemo()),
 //              ListItem('ListView', ListViewDemo()),
 //              ListItem('TextField', TextFieldDemo()),
 //              ListItem('ShaderMask', ShaderMaskDemo()),
@@ -69,7 +73,11 @@ class _MyHomePageState extends State<MyHomePage> {
 //              ListItem('IgnorePointer', IgnorePointerDemo()),
 //              ListItem('AbsorbPointer', AbsorbPointerDemo()),
 //              ListItem('MyRenderPhysicalShape & SingleChildRenderObjectWidget', MyRenderPhysicalShapeDemo()),
-//              ListItem('MyRenderBox & LeafRenderObjectWidget', MyRenderBoxDemo()),
+
+              ListItem('MyRenderBox & LeafRenderObjectWidget', MyRenderBoxDemo()),
+              ListItem('MyTestGestureDemo', MyTestGestureDemo()),
+              ListItem('CustomPaint & TriangleWidget', TriangleDemo()),
+              ListItem('navigator', FirstRoute()),
 //              ListItem('MyRenderBox2 & LeafRenderObjectWidget & Layer', MyRenderBoxDemo2()),
               ListItem('TestRaiseButton', TestRaiseButtonDemo()),
               ListItem('InheritedDemo', InheritedDemo()),
