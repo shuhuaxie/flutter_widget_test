@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'BasicWidget.dart';
 import 'MockFlex.dart';
 import 'WidgetsDemo.dart';
+import 'hite_test_demo.dart';
+import 'lifeCycle.dart';
 
 void main() => runApp(MyApp());
 
@@ -41,6 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               ListItem('MockFlex', MockFlexDemo()),
+              ListItem('Lifecycle', MyWidgetLifeCycleDemo()),
 //              ListItem('Opacity', OpacityDemo()),
 //              ListItem('Text', TextDemo()),
 //              ListItem('ColumnDemo', ColumnDemo()),
@@ -68,6 +71,11 @@ class _MyHomePageState extends State<MyHomePage> {
 //              ListItem('MyRenderPhysicalShape & SingleChildRenderObjectWidget', MyRenderPhysicalShapeDemo()),
 //              ListItem('MyRenderBox & LeafRenderObjectWidget', MyRenderBoxDemo()),
 //              ListItem('MyRenderBox2 & LeafRenderObjectWidget & Layer', MyRenderBoxDemo2()),
+              ListItem('TestRaiseButton', TestRaiseButtonDemo()),
+              ListItem('InheritedDemo', InheritedDemo()),
+              ListItem('OverlayDemo', OverlayDemo()),
+              ListItem('HitTestDemo', HitTestDemo()),
+              ListItem('ListenerDemo', ListenerDemo()),
             ],
           ),
         ),

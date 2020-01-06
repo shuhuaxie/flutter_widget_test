@@ -5,7 +5,7 @@ class MockFlexDemo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('RowDemo')),
+        appBar: AppBar(title: Text('MockFlexDemo')),
         body: MockFlex(
           children: <Widget>[
             Text("1"),
